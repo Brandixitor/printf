@@ -1,0 +1,36 @@
+.TH _printf 101
+.SH NAME
+_printf - formatted output conversion
+.SH SYPNOSIS
+.B _printf
+.IR FORMAT
+
+\fBint _printf(const char *\fR\fIformat\fR\fB, ...);\fR
+
+SH DESCRIPTION
+The function \fB_printf()\fR writes output to standard output. It receives the
+\fIformat\fR argument as a character string which outputs based on the
+arguments it recieves after \fIformat\fR. Each successive argument
+should address a conversion specifier, addressed with the prefix \fI%\fR.
+
+.B d, i
+.RS
+Both correspond to an \fIint\fR argument to be passed to this specifier.
+.RE
+
+.B s
+.RS
+The \fIconst char *\fR specifier converts the corresponding argument to a
+character string.
+.RE
+
+.B c
+.RS
+This \fIint\fR specifier converts the argument to an \fIunsigned char\fR to
+be printed individually.
+.RE
+
+.B %
+.RS
+The percent will be directly written, with no argument being taken.
+.RE
