@@ -1,55 +1,72 @@
-#ifndef HOLBERTON_H
-#define HOLBERTON_H
+#ifndef _FUNCTION_PRINTF_H_
+#define _FUNCTION_PRINTF_H_
 #include <stdarg.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-typedef unsigned int uint;
-/* String operations */
-int _strlen(char *s);
-char *_strncpy(char *dest, char *src, int n);
-char *_strcat(char *dest, char *src);
-char *_tolower(char *string);
-int alpha(int r);
-/* Print operations */
-int _putchar(char c);
-int _print(char *string);
-int _printf(const char *format, ...);
-/* Math operations */
-int _abs(int num);
-int itoa(int n, char s[]);
-uint uitoa(uint n, char s[]);
-/* Switch Hub */
-int switch_hub(const char, char, int, int, va_list, int);
-int spec_add(char *speclist, int speci, char c);
-/* Conversion operations */
-int base_op(char *buffer, uint number, int base, int pos, int lower);
-int addstring(char *string, void *add, int pos);
-int addnum(char *string, void *num, int pos);
-int addunum(char *string, void *num, int pos);
-/* Special operations */
-char *rot13(char *string);
-char *rev(char *string);
-/* Memory operations */
-char *_strdup(char *str);
+#include <stddef.h>
+
+#define BUFFER_SIZE 1024
+
 /**
- * struct op - structure to store operations
- * @op: operation input
- * @f: operation value as a function pointer
+ * struct modifier - mofifier fields collection
+ * @flags: flags field composed of ['0', ' ', '#', '+', '-']
+ * @width: width field, positive number
+ * @precision: precision field positive number not including '.'
+ * or -1 for '*'
+ * @length: length field string composed of ['h', 'l']
+ * @specifier: specifier character can one of
+ * ['c', 's', '%', 'd', 'i', 'b', 'u', 'o', 'x', 'X', 'S', 'p', 'r', 'R']
+ *
  */
-typedef struct op
+typedef struct modifier
 {
-	char op;
-	int (*f)(char *string, void *add, int pos);
-} op_t;
-op_t *initializeops(void);
-int (*get_op_func(char s))(char *, void *, int);
-int binary(char *buffer, void *number, int pos);
-int octal(char *buffer, void *number, int pos);
-int upperhex(char *buffer, void *number, int pos);
-int lowerhex(char *buffer, void *number, int pos);
-int addchar(char *string, void *add, int pos);
-int addpercent(char *string, void *add, int pos);
-int addthis(char *string, char add, int pos);
-#endif /* HOLBERTON_H */
+	char *flags;
+	int width;
+	int precision;
+	char *length;
+	char specifier;
+} modifier_t;
+
+void *_realloc(void *ptr, unsigned int, unsigned int);
+int _putchar(char c);
+char *print_binary(modifier_t *, va_list);
+char *print_unsigned_int(modifier_t *, va_list);
+char *print_octal(modifier_t *, va_list);
+char *print_hex(modifier_t *, va_list);
+char *print_char(modifier_t *, va_list ap);
+char *print_int(modifier_t *, va_list ap);
+char *print_string(modifier_t *modif, va_list ap);
+char *print_rev(modifier_t *, va_list ap);
+char *print_big_s(modifier_t *, va_list);
+char *print_pointer(modifier_t *, va_list);
+char *rot13(char *s);
+int _strlen(char *s);
+char *print_rot(modifier_t *, va_list ap);
+
+void free_modifier(modifier_t *);
+char *get_flags(const char *, unsigned int *);
+int get_width(const char *, unsigned int *);
+int get_precision(const char *, unsigned int *);
+char *get_length(const char *, unsigned int *);
+char get_specifier(const char *, unsigned int *);
+modifier_t *get_modifier(const char *, unsigned int *);
+char *treat_format(const char *, unsigned int *, va_list);
+int _printf(const char *format, ...);
+char *_strcpy(char *dest, char *src);
+void array_rev(char *arr, int len);
+int int_len(int num);
+char *ito(int n);
+char *reverse (char *s);
+
+
+/**
+ * struct print - multiple choice print
+ * @f: char Type of print
+ * @func: funct
+ */
+typedef struct print
+{
+	char f;
+	char *(*func)(modifier_t *, va_list);
+} t_print;
+
+#endif
