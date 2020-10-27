@@ -1,4 +1,10 @@
-#ifndef HOLBERTON_H
-#define HOLBERTON_H
+#ifndef HEADER_FILE
+#define HEADER_FILE
 int _printf(const char *format, ...);
-#endif /* HOLBERTON_H */
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdarg.h>
+#include <stdlib.h>
+
+#endif
