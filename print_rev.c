@@ -1,30 +1,26 @@
 #include "holberton.h"
-#include <stdio.h>
 /**
- * print_rev - print a string in reverse
- * @ap:handle %r
- * @modif :struct modifier containig modifier fields
- * Return: lenght
+ * rev - reverses string in place, without printing it
+ *
+ * @string: string to reverse
+ * Return: pointer to string
  */
-char *print_rev(modifier_t *modif, va_list ap)
+char *rev(char *string)
 {
-	int i;
-	int length;
-	char *str = NULL, *ret;
+	int i, len;
+	char a, z;
+	char *s;
 
-	if (!ap || !modif)
-		return (0);
-	str = va_arg(ap, char *);
-	printf("str = %s\n", str);
-	for (length = 0; str[length]; i++)
-		;
-	ret = malloc(length + 1);
-	if (!ret)
-		return (NULL);
+	s = _strdup(string);
+	len = _strlen(s) - 1;
+	i = 0;
+	while (i < len)
+	{
+		a = s[i];
+		z = s[len];
+		s[i++] = z;
+		s[len--] = a;
+	}
 
-	for (i = 0; i < length; i++)
-		ret[i] = str[length - i - 1];
-	ret[i] = '\0';
-
-	return (ret);
+	return (s);
 }
