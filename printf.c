@@ -1,5 +1,6 @@
+#include <unistd.h>
+#include <stdio.h>
 #include "holberton.h"
-#include <stddef.h>
 /**
 * _printf - prints and converts.
 * @format: pointer.
@@ -7,40 +8,42 @@
 */
 int _printf(const char *format, ...)
 {
-va_list args;
-int i, j, k, tmp;
-char buffer[1024];
+	int f_i, count = 0;
+	va_list args;
+	int (*func)(va_list);
 
 	if (format == NULL)
-	return (0);
-		buffer[0] = '\0';
-		i = j = tmp = k = 0;
-		va_start(args, format);
-	while (format[i] != '\0')
+		return (-1);
+	va_start(args, format);
+	if (args == NULL)
+		return (-1);
+	for (f_i = 0; format[f_i] != '\0'; f_i++)
 	{
-		while (format[i] != '\0' && format[i] != '%')
+		if (format[f_i] == '%')
 		{
-			if (j > 1022)
+			f_i++;
+			if (format[f_i] == '\0')
 			{
-			buffer[j] = '\0';
-			_print(buffer, &k);
-			j = 0;
+				return (-1);
 			}
-				buffer[j] = format[i];
-				i++;
-				j++;
-		}
-	buffer[j] = '\0';
-			if (format[i] == '%')
+			while (format[f_i] == ' ')
+				f_i++;
+			func = get_spec_func(format[f_i]);
+			if (func == NULL)
 			{
-			i++;
-			tmp = switch_hub(format, buffer, i, _strlen(buffer),
-			  args, &k);
-			i = tmp;
+				_putchar('%');
+				_putchar(format[f_i]);
+				count += 2;
+			}
+			else
+				count += func(args);
 		}
-		j = _strlen(buffer);
+		else
+		{
+			_putchar(format[f_i]);
+			count++;
+		}
 	}
 	va_end(args);
-	_print(buffer, &k);
-	return (k);
+	return (count);
 }
