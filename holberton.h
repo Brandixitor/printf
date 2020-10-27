@@ -12,7 +12,7 @@ char *_tolower(char *string);
 int alpha(int r);
 int _abs(int num);
 int itoa(int n, char s[]);
-uint uitoa(uint n, char s[]);
+int uitoa(uint n, char s[]);
 int base_op(char *buffer, unsigned long n, int b, int p, int l, int *retval);
 int addstring(char *string, void *add, int pos, int *retval);
 int addnum(char *string, void *num, int pos, int *retval);
