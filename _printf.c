@@ -1,83 +1,107 @@
-#include <unistd.h>
 #include "holberton.h"
-#include <stdio.h>
+#include <stddef.h>
 
 /**
- * buffer_print - print given buffer to stdout
- * @buffer: buffer to print
- * @nbytes: number of bytes to print
+ * _printf - print @format and convert specifiers with corresponding arguments
+ * @format: pointer to input string
  *
- * Return: nbytes
- */
-int buffer_print(char buffer[], unsigned int nbytes)
-{
-	write(1, buffer, nbytes);
-	return (nbytes);
-}
-
-/**
- * buffer_add - adds a string to buffer
- * @buffer: buffer to fill
- * @str: str to add
- * @buffer_pos: pointer to buffer first empty position
- *
- * Return: if buffer filled and emptyed return number of printed char
- * else 0
- */
-int buffer_add(char buffer[], char *str, unsigned int *buffer_pos)
-{
-	int i = 0;
-	unsigned int count = 0, pos = *buffer_pos, size = BUFFER_SIZE;
-
-	while (str && str[i])
-	{
-		if (pos == size)
-		{
-			count += buffer_print(buffer, pos);
-			pos = 0;
-		}
-		buffer[pos++] = str[i++];
-	}
-	*buffer_pos = pos;
-	return (count);
-}
-
-/**
- * _printf - produces output according to a format
- * @format: character string
- *
- * Return: the number of characters printed excluding the null byte
- * used to end output to strings
+ * Return: length of output string
  */
 int _printf(const char *format, ...)
 {
-	va_list ap;
-	unsigned int i = 0, buffer_pos = 0, count = 0;
-	char *res_str, *aux, buffer[BUFFER_SIZE];
+	va_list args;
+	int i, j, tmpi, retval;
+	char buffer[1024];
 
-	if (!format || !format[0])
-		return (-1);
-	va_start(ap, format);
-	aux = malloc(sizeof(char) * 2);
-	while (format && format[i])
+	if (format == NULL)
+		return (0);
+	buffer[0] = '\0';
+	i = j = tmpi = retval = 0;
+	va_start(args, format);
+	while (format[i] != '\0')
 	{
+		while (format[i] != '\0' && format[i] != '%')
+		{
+			if (j > 1022)
+			{
+				buffer[j] = '\0';
+				_print(buffer, &retval);
+				j = 0;
+			}
+			buffer[j] = format[i];
+			i++;
+			j++;
+		}
+		buffer[j] = '\0';
+
 		if (format[i] == '%')
 		{
-			res_str = treat_format(format, &i, ap);
-			count += buffer_add(buffer, res_str, &buffer_pos);
-			free(res_str);
+			i++;
+			tmpi = switch_hub(format, buffer, i, _strlen(buffer),
+					  args, &retval);
+			i = tmpi;
 		}
-		else
+		j = _strlen(buffer);
+	}
+	va_end(args);
+	_print(buffer, &retval);
+	return (retval);
+}
+
+/**
+ * addstring - append string @add to string @string
+ * @string: string being extended
+ * @add: string to add to @string
+ * @pos: format position, incremented in function for switch_hub brevity
+ * @retval: 'global' return value of converted output strings
+ *
+ * Return: pointer to @string
+ */
+int addstring(char *string, void *add, int pos, int *retval)
+{
+	int i;
+	char *tempstring;
+
+	i = 0;
+	if ((char *) add == NULL)
+	{
+		_strcat(string, "(null)");
+		return (pos + 1);
+	}
+	while (string[i] != '\0')
+		i++;
+	if (i + _strlen((char *) add) >= 1022)
+	{
+		tempstring = _strdup(add);
+		_print(string, retval);
+		_print(tempstring, retval);
+		free(tempstring);
+		return (pos + 1);
+	}
+	_strcat(string, (char *) add);
+	_print(string, retval);
+	return (pos + 1);
+}
+
+/**
+ * _print - prints a string to stdout
+ * @string: string to print
+ * @retval: 'global' return value of converted output strings
+ *
+ * Return: returns 1 on success
+ */
+int _print(char *string, int *retval)
+{
+	int k;
+
+	if (string != NULL)
+	{
+		*retval += _strlen(string);
+		write(1, string, (_strlen(string)));
+		for (k = 0; k < 1024; k++)
 		{
-			aux[0] = format[i++];
-			aux[1] = '\0';
-			count += buffer_add(buffer, aux, &buffer_pos);
+			string[k] = '\0';
 		}
 	}
-	count += buffer_print(buffer, buffer_pos);
-	free(aux);
-	va_end(ap);
-	if (!count)
-		count = -1;
-	return (count);
+	return (1);
 }
