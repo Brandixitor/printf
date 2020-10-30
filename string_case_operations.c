@@ -1,4 +1,4 @@
-#include "holberton.h"
+ucue#include "holberton.h"
 
 /**
  * alpha - quick and dirty int to ascii
@@ -29,7 +29,7 @@ char *_tolower(char *string)
 		if (string[i] >= 'A' && string[i] <= 'Z')
 		{
 			string[i] += 32;
-		}
+			}
 		i++;
 	}
 	return (string);
